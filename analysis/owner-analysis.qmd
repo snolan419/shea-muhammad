@@ -1,5 +1,57 @@
 ---
 title: "owner-analysis"
 format: html
+author: Shea N.
 ---
 
+## Exercise: Explore, Clean, and Wrangle Data
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(here)
+
+lobster_abundance <- read_csv(here::here("data/Lobster_Abundance_All_Years_20220829.csv")) %>% 
+    mutate(SIZE_MM = na_if(SIZE_MM, -99999))
+```
+
+```{r}
+lobsters_summarize <- lobster_abundance %>% 
+  group_by(SITE, YEAR) %>% 
+  summarize(COUNT = n())
+
+lobster_size_lrg <- lobster_abundance %>%
+    filter(YEAR %in% c(2019, 2020, 2021)) %>%
+    mutate(SIZE_BIN = if_else(SIZE_MM <= 70, true = "small", false = "large")) %>%
+    group_by(SITE, SIZE_BIN) %>%
+    summarize(COUNT = n()) %>%
+    drop_na()
+```
+
+```{r}
+fig1 = ggplot(data = lobster_abundance, 
+       aes(x = SIZE_MM)) +
+    geom_histogram() +
+    facet_wrap(~SITE)
+
+ggsave("C:/Users/26wyl/R/shea-muhammad/figs/fig1.png")
+```
+
+```{r}
+# line and point plot
+fig2 = ggplot(data = lobsters_summarize, aes(x = YEAR, y = COUNT)) +
+  geom_point(aes(color = SITE)) +
+  geom_line(aes(color = SITE)) 
+
+ggsave("C:/Users/26wyl/R/shea-muhammad/figs/fig2.png")
+```
+
+```{r}
+# dodged bar plot
+fig3 = ggplot(data = lobster_size_lrg, aes(x = SITE, y = COUNT, fill = SIZE_BIN)) +
+    geom_col(position = "dodge")
+
+ggsave("C:/Users/26wyl/R/shea-muhammad/figs/fig3.png")
+```
