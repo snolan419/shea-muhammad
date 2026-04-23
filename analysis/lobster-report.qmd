@@ -1,5 +1,44 @@
 ---
-title: "lobster-report"
+title: "Lobster Report for Biol 806"
+author: 'Shea, Muhammad, and Adriel'
 format: html
 ---
 
+## Data Source
+
+All data used in this report is sourced from Reed and Miller (2022). Full citation: 
+
+Santa Barbara Coastal LTER, D. Reed, and R. Miller. 2022. SBC LTER: Reef: Abundance, size and fishing effort for California Spiny Lobster (Panulirus interruptus), ongoing since 2012 ver 8. Environmental Data Initiative. https://doi.org/10.6073/pasta/25aa371650a671bafad64dd25a39ee18 (Accessed 2026-04-23).
+
+Data consists of abundance, size, and commercial fishing impact on California spiny lobsters. This information is spread across two separate csv files.
+
+## Analysis and Visualizations by Shea (repo owner)
+
+```{r}
+#| include: false
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(here)
+
+lobster_abundance <- read_csv(here::here("data/Lobster_Abundance_All_Years_20220829.csv")) %>% 
+    mutate(SIZE_MM = na_if(SIZE_MM, -99999))
+
+lobsters_summarize <- lobster_abundance %>% 
+  group_by(SITE, YEAR) %>% 
+  summarize(COUNT = n())
+```
+
+```{r}
+ggplot(data = lobsters_summarize, aes(x = YEAR, y = COUNT)) +
+  geom_point(aes(color = SITE)) +
+  geom_line(aes(color = SITE)) +
+  labs(y = 'Lobster count',
+       x = 'Year') +
+  theme_classic()
+```
+
+## Discussion
+
+It looks like Lobster catches peaked between 2017 and 2020, driven mainly at the AQUE site.
