@@ -15,7 +15,7 @@ Data consists of abundance, size, and commercial fishing impact on California sp
 ## Analysis and Visualizations by Shea (repo owner)
 
 ```{r}
-#| include: false
+#| output: false
 library(readr)
 library(dplyr)
 library(ggplot2)

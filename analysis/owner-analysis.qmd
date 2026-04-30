@@ -36,14 +36,21 @@ fig1 = ggplot(data = lobster_abundance,
     geom_histogram() +
     facet_wrap(~SITE)
 
-ggsave("C:/Users/26wyl/R/shea-muhammad/figs/fig1.png")
+fig1
+
+ggsave("../figs/fig1.png")
 ```
 
 ```{r}
 # line and point plot
 fig2 = ggplot(data = lobsters_summarize, aes(x = YEAR, y = COUNT)) +
   geom_point(aes(color = SITE)) +
-  geom_line(aes(color = SITE)) 
+  geom_line(aes(color = SITE)) +
+  labs(y = 'Lobster count',
+       x = 'Year') +
+  theme_classic()
+
+fig2
 
 ggsave("C:/Users/26wyl/R/shea-muhammad/figs/fig2.png")
 ```
@@ -52,6 +59,8 @@ ggsave("C:/Users/26wyl/R/shea-muhammad/figs/fig2.png")
 # dodged bar plot
 fig3 = ggplot(data = lobster_size_lrg, aes(x = SITE, y = COUNT, fill = SIZE_BIN)) +
     geom_col(position = "dodge")
+
+fig3
 
 ggsave("C:/Users/26wyl/R/shea-muhammad/figs/fig3.png")
 ```
