@@ -35,10 +35,47 @@ ggplot(data = lobsters_summarize, aes(x = YEAR, y = COUNT)) +
   geom_point(aes(color = SITE)) +
   geom_line(aes(color = SITE)) +
   labs(y = 'Lobster count',
-       x = 'Year') +
+       x = 'Year',
+       title = 'Lobster Abundance over time') +
   theme_classic()
+```
+
+## Analysis and Visualizations by Muhammad (collaborator)
+
+```{r}
+#| output: false
+lobster_traps <- read_csv(here::here(
+  "data/Lobster_Trap_Counts_All_Years_20210519.csv"
+)) %>% 
+  mutate(TRAPS = na_if(TRAPS, -99999))
+
+lobsters_traps_summarize <- lobster_traps %>% 
+  group_by(SITE, YEAR) %>% 
+  summarize(TOTAL_TRAPS = sum(TRAPS, na.rm = TRUE), .groups = "drop")
+```
+
+```{r}
+ggplot(
+  data = lobsters_traps_summarize,
+  aes(x = YEAR, y = TOTAL_TRAPS, color = SITE)
+) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_line(linewidth = 1) +
+  labs(
+    title = "Total Lobster Traps by Site Over Time",
+    x = "Year",
+    y = "Total Number of Traps",
+    color = "Site"
+  ) +
+  theme_light() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "right"
+  )
 ```
 
 ## Discussion
 
-It looks like Lobster catches peaked between 2017 and 2020, driven mainly at the AQUE site.
+It looks like Lobster abundance might have peaked between 2017 and 2020, driven mainly at the AQUE site. Some sites are less impacted by traps than others. There may be a trend toward decreasing trap numbers over time at some sites (AQUE, MOHK, and ABUR), however the dearth of traps in the latest sample is likely due to a lack of data.
