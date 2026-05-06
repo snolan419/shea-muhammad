@@ -2,4 +2,49 @@
 title: "collaborator-analysis"
 format: html
 ---
+---
+title: "Collaborator Analysis: Spiny Lobster Traps"
+format: html
+---
 
+## Data Import
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+
+lobster_traps <- read_csv(
+  "[https://pasta.lternet.edu/package/data/eml/knb-lter-sbc/77/8/66dd61c75bda17c23a3bce458c56ed84](https://pasta.lternet.edu/package/data/eml/knb-lter-sbc/77/8/66dd61c75bda17c23a3bce458c56ed84)"
+) %>% 
+  mutate(TRAPS = na_if(TRAPS, -99999))
+#| label: plot-traps
+
+lobsters_traps_summarize <- lobster_traps %>% 
+  group_by(SITE, YEAR) %>% 
+  summarize(TOTAL_TRAPS = sum(TRAPS, na.rm = TRUE), .groups = "drop")
+
+ggplot(
+  data = lobsters_traps_summarize,
+  aes(x = YEAR, y = TOTAL_TRAPS, color = SITE)
+) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_line(linewidth = 1) +
+  labs(
+    title = "Total Lobster Traps by Site Over Time",
+    x = "Year",
+    y = "Total Number of Traps",
+    color = "Site"
+  ) +
+  theme_light() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    axis.title = element_text(size = 12),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "right"
+  )
